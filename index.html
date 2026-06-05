@@ -1,40 +1,39 @@
-<!-- ========================= -->
-<!-- INDEX.HTML - RESPONSIVE   -->
-<!-- ========================= -->
-
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Al-Flowers | Mini Bouquet</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Override: page layout pakai block biasa, bukan fixed */
+    .page {
+      display: none;
+      min-height: calc(100vh - 60px);
+      padding: 80px 5% 60px;
+      background: linear-gradient(135deg, #ffe5dc, #ffd6de, #fff7f5);
+    }
+    .page.active {
+      display: block;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <div class="logo-box">
     <img src="https://alfisatunnadira-wq.github.io/Al-Flowers/logo.jpeg" alt="Al-Flowers Logo">
     <h2>Al-Flowers</h2>
   </div>
-
   <ul>
     <li><a onclick="openPage('home')">Beranda</a></li>
     <li><a onclick="openPage('catalog')">Katalog</a></li>
     <li><a onclick="openPage('order')">Pesanan</a></li>
     <li><a onclick="openPage('payment')">Bayar</a></li>
+    <li><a onclick="openPage('mystatus')">Status</a></li>
   </ul>
-
-  <div class="cart-icon" onclick="toggleCart()" aria-label="Keranjang belanja">
-    🛒
-    <div class="cart-count" id="cartCount">0</div>
-  </div>
+  <div class="cart-icon" onclick="toggleCart()">🛒<div class="cart-count" id="cartCount">0</div></div>
 </nav>
 
 <!-- HOME -->
@@ -42,10 +41,11 @@
   <div class="hero">
     <div class="hero-content">
       <div class="hero-tag">🌸 Handmade with Love</div>
-      <h1>Mini Bouquet <br><span>Cantik & Elegan</span></h1>
+      <h1>Mini Bouquet <br><span>Cantik &amp; Elegan</span></h1>
       <p>Bouquet bunga, uang, dan snack aesthetic untuk hadiah spesial.</p>
       <div class="hero-btns">
         <button class="btn btn-primary" onclick="openPage('catalog')">🌸 Mulai Pemesanan</button>
+        <button class="btn btn-secondary" onclick="openPage('mystatus')">📦 Cek Status Pesanan</button>
       </div>
     </div>
   </div>
@@ -54,369 +54,370 @@
 <!-- KATALOG -->
 <section class="page" id="catalog">
   <div class="back-btn" onclick="openPage('home')">← Kembali</div>
-
-  <div class="section-title">
-    <span>Produk Kami</span>
-    <h2>Katalog Bouquet</h2>
-  </div>
-
-  <div class="catalog-grid">
-
-    <div class="card">
-      <img src="https://alfisatunnadira-wq.github.io/Al-Flowers/buket bunga.jpeg" alt="Buket Bunga Satin">
-      <div class="card-body">
-        <h3>Buket Bunga Satin</h3>
-        <p>Bouquet bunga satin elegan.</p>
-        <div class="review-mini">⭐⭐⭐⭐⭐ (4.9)</div>
-        <div class="price">Rp 75.000</div>
-        <button class="btn btn-primary" style="width:100%;" onclick="addToCart('Buket Bunga Satin',75000)">
-          Tambah Keranjang
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="https://alfisatunnadira-wq.github.io/Al-Flowers/buket Uang.jpeg" alt="Buket Uang">
-      <div class="card-body">
-        <h3>Buket Uang</h3>
-        <p>Money bouquet cantik.</p>
-        <div class="review-mini">⭐⭐⭐⭐⭐ (4.9)</div>
-        <div class="price">Rp 60.000</div>
-        <button class="btn btn-primary" style="width:100%;" onclick="addToCart('Buket Uang',60000)">
-          Tambah Keranjang
-        </button>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="https://alfisatunnadira-wq.github.io/Al-Flowers/Buket snack.jpeg" alt="Buket Snack">
-      <div class="card-body">
-        <h3>Buket Snack</h3>
-        <p>Bouquet snack lucu.</p>
-        <div class="review-mini">⭐⭐⭐⭐⭐ (4.9)</div>
-        <div class="price">Rp 65.000</div>
-        <button class="btn btn-primary" style="width:100%;" onclick="addToCart('Buket Snack',65000)">
-          Tambah Keranjang
-        </button>
-      </div>
-    </div>
-
-  </div>
+  <div class="section-title"><span>Produk Kami</span><h2>Katalog Bouquet</h2></div>
+  <div class="catalog-grid" id="catalogGrid"></div>
 </section>
 
 <!-- ORDER -->
 <section class="page" id="order">
   <div class="back-btn" onclick="openPage('catalog')">← Kembali</div>
-
-  <div class="section-title">
-    <span>Pesanan</span>
-    <h2>Checkout Pesanan</h2>
-  </div>
-
+  <div class="section-title"><span>Pesanan</span><h2>Checkout Pesanan</h2></div>
   <form onsubmit="return false;">
-
     <div class="input-group">
-      <label for="fName">Nama Lengkap</label>
-      <input type="text" id="fName" autocomplete="name" placeholder="Masukkan nama lengkap">
+      <label>Nama Lengkap</label>
+      <input type="text" id="fName" placeholder="Masukkan nama lengkap">
     </div>
-
     <div class="input-group">
-      <label for="fPhone">Nomor WhatsApp</label>
-      <input type="tel" id="fPhone" autocomplete="tel" placeholder="Contoh: 08123456789" inputmode="numeric">
+      <label>Nomor WhatsApp</label>
+      <input type="tel" id="fPhone" placeholder="Contoh: 08123456789" inputmode="numeric">
     </div>
-
     <div class="input-group">
       <label>Pesanan Bouquet</label>
       <div class="selected-order" id="selectedOrder">Belum ada produk dipilih</div>
     </div>
-
     <div class="input-group">
-      <label for="fCustom">Custom Bouquet</label>
+      <label>Custom Bouquet</label>
       <textarea id="fCustom" placeholder="Contoh: warna pink soft, isi snack, tulisan ucapan, dll"></textarea>
     </div>
-
     <div class="input-group">
-      <label for="fAddress">Alamat Pengiriman</label>
-      <textarea id="fAddress" autocomplete="street-address" placeholder="Masukkan alamat lengkap"></textarea>
+      <label>Alamat Pengiriman</label>
+      <textarea id="fAddress" placeholder="Masukkan alamat lengkap"></textarea>
     </div>
-
-    <button type="button" class="btn btn-primary" style="width:100%;" onclick="goPayment()">
-      🌸 Lanjut Pembayaran
-    </button>
-
+    <button type="button" class="btn btn-primary" style="width:100%;" onclick="goPayment()">🌸 Lanjut Pembayaran</button>
   </form>
 </section>
 
 <!-- PAYMENT -->
 <section class="page" id="payment">
   <div class="back-btn" onclick="openPage('order')">← Kembali</div>
-
-  <div class="section-title">
-    <span>Pembayaran</span>
-    <h2>Upload Bukti Pembayaran</h2>
-  </div>
-
+  <div class="section-title"><span>Pembayaran</span><h2>Upload Bukti Pembayaran</h2></div>
   <div class="info-box">
-    <h3>Transfer Bank BRI / DANA</h3>
-    <br>
-    <p style="color:#555; font-size:0.9rem;">No Rekening / DANA :</p>
-    <h2 style="color:#d63384; margin:8px 0;">123456789</h2>
-    <p style="color:#555; font-size:0.9rem;">a/n Alfi Satunnadira</p>
-    <br>
-    <p style="font-weight:600; margin-bottom:12px; font-size:0.9rem;">
-      Jika ada kendala pembayaran hubungi Admin:
-    </p>
-
-    <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start;">
-      <a href="https://wa.me/6287766768078" target="_blank" rel="noopener"
-        style="text-decoration:none; background:#25D366; color:white; padding:12px 20px; border-radius:50px; font-weight:600; font-size:0.9rem; display:inline-flex; align-items:center; gap:6px; min-height:48px;">
-        📱 Chat WhatsApp Admin
-      </a>
-
-      <a href="https://instagram.com/alfi_mpie" target="_blank" rel="noopener"
-        style="text-decoration:none; background:#d63384; color:white; padding:12px 20px; border-radius:50px; font-weight:600; font-size:0.9rem; display:inline-flex; align-items:center; gap:6px; min-height:48px;">
-        📸 Instagram Al-Flowers
-      </a>
-    </div>
-
-    <br>
+    <h3>Transfer Bank BRI / DANA</h3><br>
+    <p style="color:#555;font-size:.9rem;">No Rekening / DANA :</p>
+    <h2 style="color:#d63384;margin:8px 0;">123456789</h2>
+    <p style="color:#555;font-size:.9rem;">a/n Alfi Satunnadira</p><br>
+    <p style="font-weight:600;margin-bottom:12px;font-size:.9rem;">Jika ada kendala hubungi Admin:</p>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+      <a href="https://wa.me/6287766768078" target="_blank" style="text-decoration:none;background:#25D366;color:white;padding:12px 20px;border-radius:50px;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;">📱 Chat WhatsApp Admin</a>
+      <a href="https://instagram.com/alfi_mpie" target="_blank" style="text-decoration:none;background:#d63384;color:white;padding:12px 20px;border-radius:50px;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;">📸 Instagram Al-Flowers</a>
+    </div><br>
     <div class="input-group" style="margin-bottom:12px;">
-      <label for="proof" style="font-size:0.9rem;">Upload Bukti Transfer</label>
-      <input type="file" id="proof" accept="image/*">
+      <label style="font-size:.9rem;">Upload Bukti Transfer</label>
+      <input type="file" id="proof" accept="image/*" onchange="previewProof(this)">
     </div>
-
-    <button class="btn btn-primary" style="width:100%;" onclick="uploadProof()">
-      Upload Bukti Pembayaran
-    </button>
+    <div id="proofPreview" style="margin-bottom:12px;"></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="submitOrder(false)">✅ Kirim Pesanan &amp; Bukti</button>
   </div>
-
   <div class="info-box">
-    <h3>Status Pembayaran</h3>
-    <br>
-    <div id="paymentStatus">
-      <p style="color:#555; font-size:0.9rem;">Menunggu upload bukti pembayaran</p>
-    </div>
-  </div>
-
-  <div class="info-box">
-    <h3>COD (Bayar di Tempat)</h3>
-    <br>
-    <p style="color:#555; margin-bottom:14px; font-size:0.9rem;">Bayar langsung di tempat tanpa transfer</p>
+    <h3>COD (Bayar di Tempat)</h3><br>
+    <p style="color:#555;margin-bottom:14px;font-size:.9rem;">Bayar langsung di tempat tanpa transfer</p>
     <button class="btn btn-secondary" onclick="codPayment()">Pilih COD</button>
   </div>
-
 </section>
 
-<!-- CART BACKDROP -->
-<div class="cart-backdrop" id="cartBackdrop"></div>
+<!-- STATUS -->
+<section class="page" id="mystatus">
+  <div class="back-btn" onclick="openPage('home')">← Kembali</div>
+  <div class="section-title"><span>Tracking</span><h2>Status Pesanan Saya</h2></div>
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="info-box" style="margin-bottom:20px;">
+      <p style="font-size:.9rem;color:#555;margin-bottom:12px;">Masukkan nama atau nomor WhatsApp untuk cek status:</p>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="searchOrder" placeholder="Nama / No. WhatsApp" style="flex:1;padding:12px;border-radius:12px;border:1px solid #f7bfd3;font-size:16px;background:#fff7fa;">
+        <button class="btn btn-primary" onclick="searchMyOrder()">Cari</button>
+      </div>
+    </div>
+    <div id="myOrderResults"></div>
+  </div>
+</section>
 
-<!-- CART SIDEBAR -->
-<div class="cart-sidebar" id="cartSidebar" role="dialog" aria-label="Keranjang belanja">
+<!-- CART -->
+<div class="cart-backdrop" id="cartBackdrop" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
     <h3>🛒 Keranjang</h3>
-    <button class="close-btn" onclick="toggleCart()" aria-label="Tutup keranjang">✕</button>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer">
-    <h3 id="cartTotal">Rp 0</h3>
-    <br>
-    <button class="btn btn-primary" style="width:100%;" onclick="goCheckout()">
-      🌸 Checkout Sekarang
-    </button>
+    <h3 id="cartTotal">Rp 0</h3><br>
+    <button class="btn btn-primary" style="width:100%;" onclick="goCheckout()">🌸 Checkout Sekarang</button>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast" aria-live="polite"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-  let cart = [];
+var cart = [];
 
-  /* PAGE NAVIGATION */
-  function openPage(id) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0, 0);
+var defaultProducts = [
+  { id:'p1', name:'Buket Bunga Satin', price:75000, img:'https://alfisatunnadira-wq.github.io/Al-Flowers/buket bunga.jpeg', desc:'Bouquet bunga satin elegan.' },
+  { id:'p2', name:'Buket Uang', price:60000, img:'https://alfisatunnadira-wq.github.io/Al-Flowers/buket Uang.jpeg', desc:'Money bouquet cantik.' },
+  { id:'p3', name:'Buket Snack', price:65000, img:'https://alfisatunnadira-wq.github.io/Al-Flowers/Buket snack.jpeg', desc:'Bouquet snack lucu.' }
+];
+
+// --- NAVIGASI ---
+function openPage(id) {
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'catalog') renderCatalog();
+  if (id === 'mystatus') renderMyOrders('');
+}
+
+// --- KATALOG ---
+function renderCatalog() {
+  var adminProducts = [];
+  try { adminProducts = JSON.parse(localStorage.getItem('alflowers_products') || '[]'); } catch(e) {}
+  var all = defaultProducts.concat(adminProducts);
+  var html = '';
+  for (var i = 0; i < all.length; i++) {
+    var p = all[i];
+    var imgSrc = p.img ? p.img : 'https://via.placeholder.com/300x220?text=Produk';
+    html += '<div class="card">' +
+      '<img src="' + imgSrc + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/300x220?text=Al-Flowers\'">' +
+      '<div class="card-body">' +
+        '<h3>' + p.name + '</h3>' +
+        '<p>' + (p.desc || '') + '</p>' +
+        '<div class="review-mini">⭐⭐⭐⭐⭐ (4.9)</div>' +
+        '<div class="price">Rp ' + Number(p.price).toLocaleString('id-ID') + '</div>' +
+        '<button class="btn btn-primary" style="width:100%;" onclick="addToCart(\'' + p.name.replace(/'/g,"\\'") + '\',' + p.price + ')">Tambah Keranjang</button>' +
+      '</div></div>';
   }
+  document.getElementById('catalogGrid').innerHTML = html;
+}
 
-  /* ADD TO CART */
-  function addToCart(name, price) {
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ name, price, qty: 1 });
+// --- CART ---
+function addToCart(name, price) {
+  var found = false;
+  for (var i = 0; i < cart.length; i++) {
+    if (cart[i].name === name) { cart[i].qty++; found = true; break; }
+  }
+  if (!found) cart.push({ name: name, price: price, qty: 1 });
+  updateCart();
+  showToast('🛒 Produk masuk keranjang');
+}
+
+function updateCart() {
+  var html = '';
+  var total = 0;
+  var jumlah = 0;
+  for (var i = 0; i < cart.length; i++) {
+    var item = cart[i];
+    total += item.price * item.qty;
+    jumlah += item.qty;
+    html += '<div class="cart-item">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+        '<input type="checkbox" class="checkout-check" data-index="' + i + '" checked style="width:20px;height:20px;accent-color:#d63384;cursor:pointer;">' +
+        '<h4>' + item.name + '</h4>' +
+      '</div>' +
+      '<p style="color:#555;">Jumlah : ' + item.qty + '</p>' +
+      '<p style="color:#d63384;font-weight:600;">Rp ' + (item.price * item.qty).toLocaleString('id-ID') + '</p>' +
+      '<div class="qty-box">' +
+        '<button onclick="minusQty(' + i + ')">&#8722;</button>' +
+        '<span>' + item.qty + '</span>' +
+        '<button onclick="plusQty(' + i + ')">+</button>' +
+      '</div></div>';
+  }
+  document.getElementById('cartItems').innerHTML = html;
+  document.getElementById('cartCount').textContent = jumlah;
+  document.getElementById('cartTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+}
+
+function plusQty(i) { cart[i].qty++; updateCart(); }
+function minusQty(i) {
+  if (cart[i].qty > 1) cart[i].qty--;
+  else cart.splice(i, 1);
+  updateCart();
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartBackdrop').classList.toggle('show');
+}
+
+function goCheckout() {
+  var checks = document.querySelectorAll('.checkout-check:checked');
+  if (!checks.length) { showToast('⚠️ Pilih produk dulu'); return; }
+  var html = '';
+  for (var i = 0; i < checks.length; i++) {
+    var item = cart[checks[i].dataset.index];
+    if (!item) continue;
+    html += '<div class="order-card"><h4>' + item.name + '</h4><p>Jumlah: ' + item.qty + '</p><p>Total: Rp ' + (item.price * item.qty).toLocaleString('id-ID') + '</p></div>';
+  }
+  document.getElementById('selectedOrder').innerHTML = html || 'Belum ada produk dipilih';
+  toggleCart();
+  openPage('order');
+}
+
+function goPayment() {
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  if (!name || !phone) { showToast('⚠️ Lengkapi nama dan nomor WhatsApp'); return; }
+  openPage('payment');
+}
+
+// --- PREVIEW BUKTI ---
+var proofBase64 = null;
+
+function previewProof(input) {
+  var prev = document.getElementById('proofPreview');
+  proofBase64 = null;
+  if (input.files && input.files[0]) {
+    var file = input.files[0];
+    // Cek ukuran file max 2MB agar tidak overflow localStorage
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('⚠️ Ukuran foto max 2MB');
+      input.value = '';
+      prev.innerHTML = '';
+      return;
     }
-    updateCart();
-    showToast("🛒 Produk masuk keranjang");
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      proofBase64 = e.target.result;
+      prev.innerHTML = '<img src="' + proofBase64 + '" style="max-width:100%;border-radius:12px;margin-top:8px;">' +
+        '<p style="font-size:.8rem;color:green;margin-top:6px;">✅ Foto siap diupload</p>';
+    };
+    reader.readAsDataURL(file);
   }
+}
 
-  /* UPDATE CART UI */
-  function updateCart() {
-    const cartItems = document.getElementById("cartItems");
-    const cartCount = document.getElementById("cartCount");
-    const cartTotal = document.getElementById("cartTotal");
+// --- KIRIM PESANAN ---
+function submitOrder(isCOD) {
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  var custom = document.getElementById('fCustom').value.trim();
+  var address = document.getElementById('fAddress').value.trim();
+  var proofEl = document.getElementById('proof');
 
-    let total = 0;
-    let jumlah = 0;
-    cartItems.innerHTML = "";
+  if (!name || !phone) { showToast('⚠️ Kembali ke form, lengkapi data dulu'); return; }
+  if (!isCOD && proofEl.files.length === 0) { showToast('❌ Upload bukti pembayaran dulu'); return; }
+  if (!isCOD && !proofBase64) { showToast('⏳ Tunggu foto selesai dimuat...'); return; }
 
-    cart.forEach((item, index) => {
-      total += item.price * item.qty;
-      jumlah += item.qty;
-
-      cartItems.innerHTML += `
-        <div class="cart-item">
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-            <input type="checkbox" class="checkout-check" data-index="${index}" checked
-              style="width:20px; height:20px; accent-color:#d63384; flex-shrink:0; cursor:pointer;">
-            <h4>${item.name}</h4>
-          </div>
-          <p style="color:#555;">Jumlah : ${item.qty}</p>
-          <p style="color:#d63384; font-weight:600;">Rp ${(item.price * item.qty).toLocaleString("id-ID")}</p>
-          <div class="qty-box">
-            <button onclick="minusQty(${index})" aria-label="Kurangi">−</button>
-            <span>${item.qty}</span>
-            <button onclick="plusQty(${index})" aria-label="Tambah">+</button>
-          </div>
-        </div>
-      `;
-    });
-
-    cartCount.textContent = jumlah;
-    cartTotal.textContent = "Rp " + total.toLocaleString("id-ID");
+  // Ambil item dari selectedOrder
+  var orderCards = document.getElementById('selectedOrder').querySelectorAll('.order-card');
+  var orderItems = [];
+  for (var i = 0; i < orderCards.length; i++) {
+    orderItems.push(orderCards[i].innerText);
   }
+  // Hitung total dari cart
+  var totalHarga = 0;
+  for (var j = 0; j < cart.length; j++) totalHarga += cart[j].price * cart[j].qty;
 
-  /* QTY CONTROLS */
-  function plusQty(index) {
-    cart[index].qty++;
-    updateCart();
-  }
-
-  function minusQty(index) {
-    if (cart[index].qty > 1) {
-      cart[index].qty--;
-    } else {
-      cart.splice(index, 1);
-    }
-    updateCart();
-  }
-
-  /* TOGGLE CART */
-  function toggleCart() {
-    document.getElementById("cartSidebar").classList.toggle("open");
-    document.getElementById("cartBackdrop").classList.toggle("show");
-  }
-
-  document.getElementById("cartBackdrop").onclick = function () {
-    toggleCart();
+  var pesanan = {
+    id: 'ORD-' + Date.now(),
+    nama: name,
+    phone: phone,
+    custom: custom,
+    address: address,
+    items: orderItems,
+    total: totalHarga,
+    metode: isCOD ? 'COD' : 'Transfer',
+    status: 'Menunggu Verifikasi',
+    waktu: new Date().toLocaleString('id-ID'),
+    catatan: '',
+    bukti: isCOD ? 'COD' : (proofBase64 || '-')
   };
 
-  /* CHECKOUT */
-  function goCheckout() {
-    const checkedItems = document.querySelectorAll(".checkout-check:checked");
-
-    if (checkedItems.length === 0) {
-      showToast("⚠️ Pilih produk dulu");
-      return;
-    }
-
-    let result = "";
-    checkedItems.forEach(check => {
-      const index = check.dataset.index;
-      const item = cart[index];
-      result += `
-        <div class="order-card">
-          <h4>${item.name}</h4>
-          <p>Jumlah : ${item.qty}</p>
-          <p>Total : Rp ${(item.price * item.qty).toLocaleString("id-ID")}</p>
-        </div>
-      `;
-    });
-
-    document.getElementById("selectedOrder").innerHTML = result;
-    toggleCart();
-    openPage('order');
+  var orders = [];
+  try { orders = JSON.parse(localStorage.getItem('alflowers_orders') || '[]'); } catch(e) {}
+  orders.push(pesanan);
+  try {
+    localStorage.setItem('alflowers_orders', JSON.stringify(orders));
+  } catch(e) {
+    showToast('❌ Penyimpanan penuh, coba foto lebih kecil');
+    return;
   }
 
-  /* GO TO PAYMENT */
-  function goPayment() {
-    const name = document.getElementById("fName").value.trim();
-    const phone = document.getElementById("fPhone").value.trim();
+  // Reset form
+  cart = [];
+  updateCart();
+  document.getElementById('fName').value = '';
+  document.getElementById('fPhone').value = '';
+  document.getElementById('fCustom').value = '';
+  document.getElementById('fAddress').value = '';
+  document.getElementById('proof').value = '';
+  document.getElementById('proofPreview').innerHTML = '';
+  document.getElementById('selectedOrder').innerHTML = 'Belum ada produk dipilih';
 
-    if (!name || !phone) {
-      showToast("⚠️ Lengkapi nama dan nomor WhatsApp");
-      return;
-    }
+  showToast('✅ Pesanan terkirim! Menunggu verifikasi admin.');
+  setTimeout(function() { openPage('mystatus'); }, 1500);
+}
 
-    openPage('payment');
-  }
+function codPayment() {
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  if (!name || !phone) { showToast('⚠️ Isi dulu nama & WA di halaman Pesanan'); openPage('order'); return; }
+  submitOrder(true);
+}
 
-  /* UPLOAD PROOF */
-  function uploadProof() {
-    const proof = document.getElementById("proof").files.length;
-    const status = document.getElementById("paymentStatus");
+// --- STATUS PESANAN ---
+function searchMyOrder() {
+  var keyword = document.getElementById('searchOrder').value.trim();
+  if (!keyword) { showToast('⚠️ Masukkan nama atau nomor WA'); return; }
+  renderMyOrders(keyword.toLowerCase());
+}
 
-    if (proof === 0) {
-      showToast("❌ Upload bukti pembayaran terlebih dahulu");
-      return;
-    }
+function renderMyOrders(keyword) {
+  var orders = [];
+  try { orders = JSON.parse(localStorage.getItem('alflowers_orders') || '[]'); } catch(e) {}
 
-    status.innerHTML = `
-      <div class="waiting-box">
-        ⏳ Bukti pembayaran<br><br>
-        Menunggu verifikasi admin.
-      </div>
-    `;
-    showToast("menunggu proses verifikasi");
-
-    /* SIMULASI VERIFIKASI ADMIN */
-    setTimeout(() => {
-      const approved = Math.random() > 0.5;
-      if (approved) {
-        status.innerHTML = `
-          <div class="success-box">
-             Pembayaran sedang diverifikasi admin<br><br>
-            
-          </div>
-        `;
-        showToast(" tunggu admin menghubungi anda");
-        cart = [];
-        updateCart();
-      } else {
-        status.innerHTML = `
-          <div class="error-box">
-            ❌ Bukti pembayaran tidak valid<br><br>
-            Silakan upload ulang bukti pembayaran.
-          </div>
-        `;
-        showToast("❌ Pembayaran ditolak");
+  var filtered = [];
+  if (keyword) {
+    for (var i = 0; i < orders.length; i++) {
+      var o = orders[i];
+      if (o.nama.toLowerCase().indexOf(keyword) !== -1 || o.phone.indexOf(keyword) !== -1) {
+        filtered.push(o);
       }
-    }, 4000);
+    }
+  } else {
+    filtered = orders.slice(-5);
   }
 
-  /* COD PAYMENT */
-  function codPayment() {
-    const status = document.getElementById("paymentStatus");
-    status.innerHTML = `
-      <div class="success-box">
-        ✅ Pesanan COD berhasil dibuat<br><br>
-        Pesanan sedang diproses 🌸
-      </div>
-    `;
-    showToast("✅ Pesanan berhasil");
-    cart = [];
-    updateCart();
+  var hasil = document.getElementById('myOrderResults');
+  if (!filtered.length) {
+    hasil.innerHTML = '<div class="info-box" style="text-align:center;color:#999;">😔 Pesanan tidak ditemukan.<br><small>Coba cek nama atau nomor WA kamu.</small></div>';
+    return;
   }
 
-  /* TOAST */
-  function showToast(msg) {
-    const toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3000);
+  var html = '';
+  for (var i = filtered.length - 1; i >= 0; i--) {
+    var o = filtered[i];
+    var colorMap = {'Menunggu Verifikasi':'#8a6d00','Diproses':'#2563eb','Dikirim':'#7c3aed','Selesai':'green','Ditolak':'red'};
+    var bgMap = {'Menunggu Verifikasi':'#fff6df','Diproses':'#eff6ff','Dikirim':'#f5f0ff','Selesai':'#eaffea','Ditolak':'#ffeaea'};
+    var sc = colorMap[o.status] || '#555';
+    var sb = bgMap[o.status] || '#f9f9f9';
+
+    var itemsHtml = '-';
+    if (Array.isArray(o.items) && o.items.length) {
+      itemsHtml = '';
+      for (var j = 0; j < o.items.length; j++) {
+        itemsHtml += '<span style="display:block;font-size:.85rem;color:#444;">' + o.items[j] + '</span>';
+      }
+    }
+
+    html += '<div class="info-box" style="margin-bottom:16px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">' +
+        '<div><h3 style="font-size:1rem;">' + o.nama + '</h3><p style="font-size:.8rem;color:#999;">' + o.id + ' &middot; ' + o.waktu + '</p></div>' +
+        '<span style="background:' + sb + ';color:' + sc + ';padding:6px 12px;border-radius:50px;font-size:.8rem;font-weight:700;white-space:nowrap;">' + o.status + '</span>' +
+      '</div>' +
+      '<div style="margin-bottom:8px;">' + itemsHtml + '</div>' +
+      '<p style="font-weight:700;color:#d63384;">Total: Rp ' + Number(o.total || 0).toLocaleString('id-ID') + '</p>' +
+      '<p style="font-size:.85rem;color:#555;margin-top:4px;">Metode: ' + o.metode + '</p>' +
+      (o.catatan ? '<div style="margin-top:10px;padding:10px;background:#fff0f5;border-radius:10px;font-size:.85rem;color:#555;">💬 <b>Catatan Admin:</b> ' + o.catatan + '</div>' : '') +
+    '</div>';
   }
+  hasil.innerHTML = html;
+}
+
+// --- TOAST ---
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
 </script>
-
 </body>
 </html>
