@@ -70,7 +70,7 @@ table td{padding:12px;border-bottom:1px solid #ddd;text-align:center;font-size:.
     <li><a onclick="showTab('dashboard')" class="active" id="nav-dashboard">📊 Dashboard</a></li>
     <li><a onclick="showTab('pesanan')" id="nav-pesanan">📦 Data Pesanan <span class="notif-badge" id="notifBadge" style="display:none"></span></a></li>
     <li><a onclick="showTab('produk')" id="nav-produk">🌸 Kelola Produk</a></li>
-    <li><a onclick="if(confirm('Logout?')) alert('Logout berhasil')">🚪 Logout</a></li>
+    <li><a onclick="doLogout()" id="nav-logout">🚪 Logout</a></li>
   </ul>
 </div>
 
@@ -127,7 +127,12 @@ table td{padding:12px;border-bottom:1px solid #ddd;text-align:center;font-size:.
       <div class="form-group"><label>Nama Produk</label><input type="text" id="pNama" placeholder="Nama produk"></div>
       <div class="form-group"><label>Harga (Rp)</label><input type="number" id="pHarga" placeholder="Contoh: 75000"></div>
       <div class="form-group"><label>Deskripsi</label><textarea id="pDesc" placeholder="Deskripsi singkat produk"></textarea></div>
-      <div class="form-group"><label>Link Gambar</label><input type="text" id="pImg" placeholder="https://..."></div>
+      <div class="form-group">
+        <label>Foto Produk</label>
+        <input type="file" id="pImgFile" accept="image/*" onchange="previewProdukImg(this)" style="padding:10px;border:1px dashed #ccc;border-radius:8px;background:#f9fafb;cursor:pointer;">
+        <div id="pImgPreview" style="margin-top:10px;"></div>
+        <input type="hidden" id="pImg">
+      </div>
       <button class="submit-btn" onclick="saveProduk()">💾 Simpan Produk</button>
     </div>
     <div class="table-box">
@@ -184,7 +189,15 @@ function showTab(tab) {
   if(tab==='produk') renderProduk();
 }
 
-// ======= HELPERS =======
+// ======= LOGOUT =======
+function doLogout() {
+  if(confirm('Yakin ingin logout dari dashboard admin?')) {
+    // Tutup tab ini dan kembali ke halaman utama
+    window.opener ? window.close() : window.location.replace('index-2.html');
+  }
+}
+
+
 function getOrders() { return JSON.parse(localStorage.getItem('alflowers_orders') || '[]'); }
 function saveOrders(orders) { localStorage.setItem('alflowers_orders', JSON.stringify(orders)); }
 function getProducts() { return JSON.parse(localStorage.getItem('alflowers_products') || '[]'); }
@@ -353,6 +366,8 @@ function saveProduk() {
   document.getElementById('pHarga').value='';
   document.getElementById('pDesc').value='';
   document.getElementById('pImg').value='';
+  document.getElementById('pImgFile').value='';
+  document.getElementById('pImgPreview').innerHTML='';
   renderProduk();
   showToast('✅ Produk disimpan!');
 }
@@ -365,6 +380,14 @@ function editProduk(id) {
   document.getElementById('pHarga').value = p.price;
   document.getElementById('pDesc').value = p.desc||'';
   document.getElementById('pImg').value = p.img||'';
+  document.getElementById('pImgFile').value = '';
+  // Tampilkan preview gambar lama
+  const preview = document.getElementById('pImgPreview');
+  if (p.img) {
+    preview.innerHTML = `<img src="${p.img}" style="max-width:160px;max-height:160px;border-radius:10px;border:1px solid #ddd;object-fit:cover;"><p style="font-size:.78rem;color:#888;margin-top:6px;">📷 Gambar saat ini (upload baru untuk mengganti)</p>`;
+  } else {
+    preview.innerHTML = '';
+  }
   document.getElementById('formProdukTitle').textContent='✏️ Edit Produk';
   window.scrollTo(0,0);
 }
@@ -376,7 +399,28 @@ function deleteProduk(id) {
   showToast('🗑️ Produk dihapus');
 }
 
-// ======= TOAST =======
+// ======= UPLOAD GAMBAR PRODUK =======
+function previewProdukImg(input) {
+  const preview = document.getElementById('pImgPreview');
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('⚠️ Ukuran gambar max 2MB');
+      input.value = '';
+      preview.innerHTML = '';
+      document.getElementById('pImg').value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('pImg').value = e.target.result;
+      preview.innerHTML = `<img src="${e.target.result}" style="max-width:160px;max-height:160px;border-radius:10px;border:1px solid #ddd;object-fit:cover;"><p style="font-size:.78rem;color:green;margin-top:6px;">✅ Foto siap diupload</p>`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
