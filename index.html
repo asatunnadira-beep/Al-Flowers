@@ -7,16 +7,81 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    /* Override: page layout pakai block biasa, bukan fixed */
     .page {
       display: none;
       min-height: calc(100vh - 60px);
       padding: 80px 5% 60px;
       background: linear-gradient(135deg, #ffe5dc, #ffd6de, #fff7f5);
     }
-    .page.active {
-      display: block;
+    .page.active { display: block; }
+
+    .admin-login-btn {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
     }
+    .admin-login-btn:hover { background: #2563eb; }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: min(90vw, 360px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    .modal-box h3 { margin-bottom: 6px; font-size: 1.2rem; color: #111; }
+    .modal-box p  { font-size: .85rem; color: #888; margin-bottom: 20px; }
+    .modal-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+    .modal-input:focus { border-color: #2563eb; }
+    .modal-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .modal-btn:hover { background: #1d4ed8; }
+    .modal-cancel {
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: .9rem;
+      cursor: pointer;
+      color: #555;
+    }
+    .modal-err { color: #ef4444; font-size: .82rem; margin-bottom: 10px; display: none; }
   </style>
 </head>
 <body>
@@ -33,8 +98,23 @@
     <li><a onclick="openPage('payment')">Bayar</a></li>
     <li><a onclick="openPage('mystatus')">Status</a></li>
   </ul>
-  <div class="cart-icon" onclick="toggleCart()">🛒<div class="cart-count" id="cartCount">0</div></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="admin-login-btn" onclick="openAdminModal()">🔒 Admin</button>
+    <div class="cart-icon" onclick="toggleCart()">🛒<div class="cart-count" id="cartCount">0</div></div>
+  </div>
 </nav>
+
+<!-- MODAL LOGIN ADMIN -->
+<div class="modal-backdrop" id="adminModal">
+  <div class="modal-box">
+    <h3>🔐 Login Admin</h3>
+    <p>Masukkan password untuk masuk ke dashboard admin</p>
+    <input class="modal-input" type="password" id="adminPass" placeholder="Password admin" onkeydown="if(event.key==='Enter') doAdminLogin()">
+    <p class="modal-err" id="adminErr">❌ Password salah, coba lagi</p>
+    <button class="modal-btn" onclick="doAdminLogin()">Masuk ke Dashboard</button>
+    <button class="modal-cancel" onclick="closeAdminModal()">Batal</button>
+  </div>
+</div>
 
 <!-- HOME -->
 <section class="page active" id="home">
@@ -410,6 +490,37 @@ function renderMyOrders(keyword) {
   }
   hasil.innerHTML = html;
 }
+
+// --- ADMIN LOGIN ---
+var ADMIN_PASSWORD = 'alflowers123'; // ganti password di sini
+
+function openAdminModal() {
+  document.getElementById('adminPass').value = '';
+  document.getElementById('adminErr').style.display = 'none';
+  document.getElementById('adminModal').classList.add('show');
+  setTimeout(function(){ document.getElementById('adminPass').focus(); }, 100);
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('show');
+}
+
+function doAdminLogin() {
+  var pass = document.getElementById('adminPass').value;
+  if (pass === ADMIN_PASSWORD) {
+    closeAdminModal();
+    window.open('admin.html', '_blank');
+  } else {
+    document.getElementById('adminErr').style.display = 'block';
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminPass').focus();
+  }
+}
+
+// Tutup modal klik luar
+document.getElementById('adminModal').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminModal();
+});
 
 // --- TOAST ---
 function showToast(msg) {
