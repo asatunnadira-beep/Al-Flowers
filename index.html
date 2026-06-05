@@ -10,7 +10,7 @@
     .page {
       display: none;
       min-height: calc(100vh - 60px);
-      padding: 80px 5% 60px;
+      padding: 80px 5% 80px;
       background: linear-gradient(135deg, #ffe5dc, #ffd6de, #fff7f5);
     }
     .page.active { display: block; }
@@ -99,7 +99,6 @@
     <li><a onclick="openPage('mystatus')">Status</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:8px;">
-    <button class="admin-login-btn" onclick="openAdminModal()">🔒 Admin</button>
     <div class="cart-icon" onclick="toggleCart()">🛒<div class="cart-count" id="cartCount">0</div></div>
   </div>
 </nav>
@@ -109,6 +108,7 @@
   <div class="modal-box">
     <h3>🔐 Login Admin</h3>
     <p>Masukkan password untuk masuk ke dashboard admin</p>
+    <input class="modal-input" type="text" id="username" placeholder="Username" onkeydown="if(event.key==='Enter') doAdminLogin()">
     <input class="modal-input" type="password" id="adminPass" placeholder="Password admin" onkeydown="if(event.key==='Enter') doAdminLogin()">
     <p class="modal-err" id="adminErr">❌ Password salah, coba lagi</p>
     <button class="modal-btn" onclick="doAdminLogin()">Masuk ke Dashboard</button>
@@ -226,6 +226,11 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer style="position:fixed;bottom:0;width:100%;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #f7bfd3;padding:10px 5%;display:flex;justify-content:center;align-items:center;z-index:9999;">
+  <button class="admin-login-btn" onclick="openAdminModal()" style="font-size:.8rem;padding:10px 20px;border-radius:50px;">🔒 Login Admin</button>
+</footer>
 
 <script>
 var cart = [];
@@ -492,13 +497,15 @@ function renderMyOrders(keyword) {
 }
 
 // --- ADMIN LOGIN ---
+var ADMIN_USERNAME = 'alflowers';
 var ADMIN_PASSWORD = 'alflowers123'; // ganti password di sini
 
 function openAdminModal() {
+   document.getElementById('username').value = '';
   document.getElementById('adminPass').value = '';
   document.getElementById('adminErr').style.display = 'none';
   document.getElementById('adminModal').classList.add('show');
-  setTimeout(function(){ document.getElementById('adminPass').focus(); }, 100);
+  setTimeout(function(){ document.getElementById('username').focus(); }, 100);
 }
 
 function closeAdminModal() {
@@ -506,12 +513,14 @@ function closeAdminModal() {
 }
 
 function doAdminLogin() {
+  var user = document.getElementById('username').value.trim();
   var pass = document.getElementById('adminPass').value;
-  if (pass === ADMIN_PASSWORD) {
+  if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
     closeAdminModal();
     window.open('admin.html', '_blank');
   } else {
     document.getElementById('adminErr').style.display = 'block';
+    document.getElementById('adminErr').textContent = '❌ Username atau password salah, coba lagi';
     document.getElementById('adminPass').value = '';
     document.getElementById('adminPass').focus();
   }
